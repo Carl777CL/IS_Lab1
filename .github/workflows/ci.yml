@@ -1,19 +1,16 @@
 name: Security CI Pipeline
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
-
 on: [push]
 
 jobs:
   security-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -24,7 +21,23 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run SAST (Bandit)
-        run: bandit app.py || true
+        run: |
+          bandit app.py -f txt -o bandit-report.txt || true
+          cat bandit-report.txt
 
       - name: Run SCA (pip-audit)
-        run: pip-audit || true
+        run: |
+          pip-audit -f columns > dependency-report.txt || true
+          cat dependency-report.txt
+
+      - name: Upload Bandit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.txt
+
+      - name: Upload Dependency Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report
+          path: dependency-report.txt
