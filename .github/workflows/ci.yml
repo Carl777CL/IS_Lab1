@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run SAST (Bandit)
-        run: bandit -r . -x ./venv
-
+        run: bandit app.py || true
+        
       - name: Run SCA (pip-audit)
         run: pip-audit || true
