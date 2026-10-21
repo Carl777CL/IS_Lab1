@@ -1,5 +1,8 @@
 name: Security CI Pipeline
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
+
 on: [push]
 
 jobs:
