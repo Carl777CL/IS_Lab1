@@ -27,7 +27,7 @@ jobs:
 
       - name: Run SCA (pip-audit)
         run: |
-          pip-audit -f columns > dependency-report.txt || true
+          pip-audit -r requirements.txt -f columns > dependency-report.txt || true
           cat dependency-report.txt
 
       - name: Upload Bandit Report
